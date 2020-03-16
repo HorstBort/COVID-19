@@ -6,6 +6,10 @@ Fits exponential function and plots current data and projection.
 
 Explore by selecting country and weeks for projection.
 
+**HOWTO**
+
+Select next cell and click `run` above or press `Shift+Enter`.
+
 **Experimental**:
 
  * Select `gaussfit` to fit Gaussian to data (very rough estimate, since we are just at the beginning of the curve :-/)

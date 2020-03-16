@@ -1,5 +1,7 @@
 ## COVID-19 Data Explorer
 
+[![Binder](https://notebooks.gesis.org/binder/badge_logo.svg)](https://notebooks.gesis.org/binder/v2/gh/HorstBort/COVID-19.git/master?filepath=COVID-19.ipynb)
+
 Fetches current data from https://github.com/CSSEGISandData/COVID-19 (Johns Hopkins University, updated daily).
 
 Fits exponential function and plots current data and projection.

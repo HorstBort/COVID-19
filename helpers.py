@@ -26,7 +26,7 @@ def country_prio(c):
 class CovidPlot(object):
     
     def __init__(self):
-        self.dataframe = pd.read_csv('https://github.com/CSSEGISandData/COVID-19/raw/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv')
+        self.dataframe = pd.read_csv('https://github.com/CSSEGISandData/COVID-19/raw/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv')
         self.countries = sorted(list(set(self.dataframe['Country/Region'])),
                                 key=country_prio)
         fig = plt.figure(num='COVID-19 Cases')

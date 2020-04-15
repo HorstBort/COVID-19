@@ -27,6 +27,8 @@ class CovidPlot(object):
     
     def __init__(self):
         self.dataframe = pd.read_csv('https://github.com/CSSEGISandData/COVID-19/raw/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv')
+        self.dataframe_rec = pd.read_csv('https://github.com/CSSEGISandData/COVID-19/raw/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_recovered_global.csv')
+        self.dataframe_deaths = pd.read_csv('https://github.com/CSSEGISandData/COVID-19/raw/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv')
         self.countries = sorted(list(set(self.dataframe['Country/Region'])),
                                 key=country_prio)
         fig = plt.figure(num='COVID-19 Cases')
@@ -49,7 +51,11 @@ class CovidPlot(object):
         self.ax_new.clear()
 
         dataframe = self.dataframe[self.dataframe['Country/Region'] == country].loc[:,START_DATE:]
+        dataframe_rec = self.dataframe_rec[self.dataframe_rec['Country/Region'] == country].loc[:,START_DATE:]
+        dataframe_deaths = self.dataframe_deaths[self.dataframe_deaths['Country/Region'] == country].loc[:,START_DATE:]
         df = pd.DataFrame(dataframe.sum(), self.dates)
+        df_rec = pd.DataFrame(dataframe_rec.sum(), self.dates)
+        df_deaths = pd.DataFrame(dataframe_deaths.sum(), self.dates)
         A, T, Off = curve_fit(exp_T, self.days, df[0])[0]
         p0 = [10**4, 8, 60]
         bounds = ([1000, 1, 0], [1E7, 1E4, 1E4])
@@ -64,7 +70,9 @@ class CovidPlot(object):
         
         proj = pd.DataFrame(exp_T(days_proj, A, T, Off))
         self.ax_tot.plot(df.index, df, 'o',
-                         dates_proj, proj
+                         df_rec.index, df_rec, '+',
+                         df_deaths.index, df_deaths, 'x',
+                         #dates_proj, proj
                         )
         if plot_initial:
             self.ax_tot.plot(dates_proj, gauss(days_proj, *p0), '--', alpha=0.2)
@@ -75,7 +83,7 @@ class CovidPlot(object):
         #else:
         #    self.ax_tot.set_ylim([0, df[0].max()*1.1])
         self.ax_new.plot(self.dates, df[0].diff(), 'o')
-        self.ax_new.plot(dates_proj, proj.diff())
+        #self.ax_new.plot(dates_proj, proj.diff())
         self.ax_tot.text(0.25, 0.9,
                          'Total # of cases\n# cases doubles every {0:.1f} days'.format(T),
                          transform=self.ax_tot.transAxes, bbox={'facecolor': 'lightgrey'},

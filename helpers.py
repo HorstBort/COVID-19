@@ -99,6 +99,7 @@ class CovidPlot(object):
         
         for (ev_date, ev_title), col in zip(EVENTS.get(country, {}).items(), COLORS):
             self.ax_tot.axvline(ev_date, label=ev_title, color=col)
+            self.ax_new.axvline(ev_date, color=col)
             #self.ax_tot.text(ev_date, 0.9 * df.max(), ev_title)
         
         if plot_initial:

@@ -44,6 +44,7 @@ class CovidPlot(object):
 
     
     def plot_country(self, country, future_weeks=26,
+                     log_tot=False,
                      gaussfit=False,
                      plot_initial=False
                     ):
@@ -92,3 +93,6 @@ class CovidPlot(object):
                          '# of new cases per day',
                          transform=self.ax_new.transAxes, bbox={'facecolor': 'lightgrey'},
                          horizontalalignment='center', verticalalignment='center')
+        
+        if log_tot:
+            self.ax_tot.set_yscale('log')

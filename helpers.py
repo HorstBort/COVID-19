@@ -6,10 +6,12 @@ from scipy.optimize import curve_fit
 
 START_DATE = '1/22/20'
 
-EVENTS = {'Germany': {#'3/19/20': 'DLR',
-                      '3/8/20': 'Keine Großveranstaltungen',
-                      '3/17/20': 'Einreisestopp/Geschäfte',
-                      '3/22/20': 'Kontaktverbot'}
+EVENTS = {'Germany': {pd.to_datetime(k): v
+                      for k, v in {#'3/19/20': 'DLR',
+                                   '3/8/20': 'Keine Großveranstaltungen',
+                                   '3/17/20': 'Einreisestopp/Geschäfte',
+                                   '3/22/20': 'Kontaktverbot'}.items()
+                     }
          }
 
 NR_TESTS_PER_CALWEEK = {'Germany': {k: v/7.0 for k, v in {11: 127457, 12: 348619, 13: 360964, 14: 392984}.items()}}

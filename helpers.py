@@ -2,6 +2,8 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 from scipy.optimize import curve_fit
+from pandas.plotting import register_matplotlib_converters
+register_matplotlib_converters()
 
 
 START_DATE = '1/22/20'

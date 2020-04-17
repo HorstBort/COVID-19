@@ -11,9 +11,9 @@ START_DATE = '1/22/20'
 # From: https://de.wikipedia.org/wiki/COVID-19-Pandemie_in_Deutschland
 EVENTS = {'Germany': {pd.to_datetime(k): v
                       for k, v in {#'3/19/20': 'DLR',
-                                   '3/8/20': 'Keine Großveranstaltungen',
-                                   '3/17/20': 'Einreisestopp/Geschäfte',
-                                   '3/22/20': 'Kontaktverbot'}.items()
+                                   '3/8/20': {'title': 'No more big events', 'color': 'lightpink'},
+                                   '3/17/20': {'title': 'Borders/shops closed', 'color': 'orange'},
+                                   '3/22/20': {'title': 'Lockdown', 'color': 'crimson'}}.items()
                      }
          }
 
@@ -96,15 +96,29 @@ class CovidPlot(object):
         
         #proj = pd.DataFrame(exp_T(days_proj, A, T, Off))
         self.ax_tot.plot(df, 'o', label='Confirmed cases', markersize=3)
-        self.ax_tot.plot(df_rec, 'og', label='Recovered (guesstimate)', zorder=-5, markersize=3)
+        self.ax_tot.plot(df_rec, 'og', label='Recovered (JHU guesstimate)', zorder=-5, markersize=3)
         self.ax_tot.plot(df_deaths, 'ok', label='Deaths', zorder=-10, markersize=3)
-                         #dates_proj, proj
-        self.ax_tot.plot(self.tests_per_day.get(country, []), 's', label='# Tests per day', color='orange', alpha=0.5, markersize=3)
+        self.ax_tot.plot(df - df_rec - df_deaths, 'o', c='magenta', label='Currently infected (JHU guesstimate)', zorder=-2, markersize=3)
+        self.ax_tot.plot(df.diff().rolling(window=14).sum(), 'o', c='skyblue', label='Currently infected (my guesstimate)', zorder=-2, markersize=3)
         
-        for (ev_date, ev_title), col in zip(EVENTS.get(country, {}).items(), COLORS):
-            self.ax_tot.axvline(ev_date, label=ev_title, color=col)
-            self.ax_new.axvline(ev_date, color=col)
-            #self.ax_tot.text(ev_date, 0.9 * df.max(), ev_title)
+                         #dates_proj, proj
+        self.ax_tot.plot(self.tests_per_day.get(country, []), 's', label='# Tests per day', color='darkcyan', alpha=0.5, markersize=3)
+        
+        events = EVENTS.get(country)
+        if events is not None:
+            ev_dates = sorted(list(events.keys()))
+            for ii, ev_date in enumerate(ev_dates):
+                ev = events[ev_date]
+                ev_title = ev['title']
+                col = ev['color']
+                ev_end = ev_dates[ii + 1] if ii < len(ev_dates) - 1 else self.dates[-1]
+                self.ax_tot.axvline(ev_date, label=ev_title, color=col, alpha=0.5)
+                self.ax_tot.axvline(ev_date + pd.Timedelta(weeks=2), label='+ two weeks', color=col, linestyle='--', alpha=0.3)
+                self.ax_tot.axvspan(ev_date, ev_end, color=col, alpha=0.1, zorder=-20)
+                
+                self.ax_new.axvline(ev_date, color=col, alpha=0.5)
+                self.ax_new.axvline(ev_date + pd.Timedelta(weeks=2), color=col, linestyle='--', alpha=0.3)
+                #self.ax_tot.text(ev_date, 0.9 * df.max(), ev_title)
         
         if plot_initial:
             self.ax_tot.plot(dates_proj, gauss(days_proj, *p0), '--', alpha=0.2)
@@ -114,10 +128,10 @@ class CovidPlot(object):
             self.ax_tot.set_ylim([0, sim.max()])
         #else:
         #    self.ax_tot.set_ylim([0, df[0].max()*1.1])
-        new_cases = df[0].diff()
+        new_cases = df.diff()
         self.ax_new.plot(self.dates, new_cases , 'o', label='New conf. cases', markersize=3)
-        self.ax_new.fill_between(self.dates, self.weekends[0] * new_cases.max(), step='pre', alpha=0.4, label='Weekends')
-        self.ax_tests.plot(self.tests_per_day.get(country, []), 's', label='# Tests per day', color='orange', alpha=0.5, markersize=3)
+        self.ax_new.fill_between(self.dates, self.weekends[0] * new_cases[0].max(), step='pre', alpha=0.2, label='Weekends')
+        self.ax_tests.plot(self.tests_per_day.get(country, []), 's', label='# Tests per day', color='darkcyan', alpha=0.5, markersize=3)
         #self.ax_new.plot(dates_proj, proj.diff())
         #self.ax_tot.text(0.25, 0.9,
         #                 'Total # of cases\n# cases doubles every {0:.1f} days'.format(T),
@@ -131,7 +145,7 @@ class CovidPlot(object):
         self.ax_tot.legend()
         self.ax_new.legend()
         self.ax_tests.legend(loc='center left')
-        self.ax_tests.tick_params(axis='y', labelcolor='orange')
+        self.ax_tests.tick_params(axis='y', labelcolor='darkcyan')
         if log_tot:
             self.ax_tot.set_yscale('log')
         if log_new:

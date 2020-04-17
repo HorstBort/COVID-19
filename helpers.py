@@ -8,6 +8,7 @@ register_matplotlib_converters()
 
 START_DATE = '1/22/20'
 
+# From: https://de.wikipedia.org/wiki/COVID-19-Pandemie_in_Deutschland
 EVENTS = {'Germany': {pd.to_datetime(k): v
                       for k, v in {#'3/19/20': 'DLR',
                                    '3/8/20': 'Keine Großveranstaltungen',
@@ -16,8 +17,9 @@ EVENTS = {'Germany': {pd.to_datetime(k): v
                      }
          }
 
-NR_TESTS_PER_CALWEEK = {'Germany': {k: v/7.0 for k, v in {11: 127457, 12: 348619, 13: 360964, 14: 392984}.items()}}
-
+# From: https://de.wikipedia.org/wiki/COVID-19-Pandemie_in_Deutschland#Pr%C3%BCfkapazit%C3%A4ten,_Tests_und_Anteil_positiver_Ergebnisse
+# https://www.rki.de/DE/Content/InfAZ/N/Neuartiges_Coronavirus/Situationsberichte/2020-04-15-de.pdf?__blob=publicationFile
+NR_TESTS_PER_CALWEEK = {'Germany': {k: v/7.0 for k, v in {11: 127457, 12: 348619, 13: 361374, 14: 406052, 15: 360139}.items()}}
 
 COLORS = plt.rcParams['axes.prop_cycle'].by_key()['color']
 

@@ -13,7 +13,10 @@ EVENTS = {'Germany': {pd.to_datetime(k): v
                       for k, v in {#'3/19/20': 'DLR',
                                    '3/8/20': {'title': 'No more big events', 'color': 'lightpink'},
                                    '3/17/20': {'title': 'Borders/shops closed', 'color': 'orange'},
-                                   '3/22/20': {'title': 'Lockdown', 'color': 'crimson'}}.items()
+                                   '3/22/20': {'title': 'Lockdown', 'color': 'crimson'},
+                                   '3/26/20': {'title': 'Test criteria broadened', 'color': 'darkcyan', 'type': 'single'},
+                                   '4/20/20': {'title': 'Small shops opening', 'color': 'palevioletred'}
+                                   }.items()
                      }
          }
 
@@ -106,20 +109,26 @@ class CovidPlot(object):
         
         events = EVENTS.get(country)
         if events is not None:
-            ev_dates = sorted(list(events.keys()))
-            for ii, ev_date in enumerate(ev_dates):
-                ev = events[ev_date]
+            evs_span = sorted(list(events.items()))
+            for ii, (ev_date, ev) in enumerate(evs_span):
                 ev_title = ev['title']
                 col = ev['color']
-                ev_end = ev_dates[ii + 1] if ii < len(ev_dates) - 1 else self.dates[-1]
+                ev_end = evs_span[ii + 1][0] if ii < len(evs_span) - 1 else self.dates[-1]
+                ev_end = self.dates[-1]
+                if ii < len(evs_span) - 1:
+                    d_fol = [d for d, e in evs_span[ii + 1:] if not e.get('type') == 'single']
+                    if d_fol:
+                        ev_end = d_fol[0]
                 self.ax_tot.axvline(ev_date, label=ev_title, color=col, alpha=0.5)
                 self.ax_tot.axvline(ev_date + pd.Timedelta(weeks=2), label='+ two weeks', color=col, linestyle='--', alpha=0.3)
-                self.ax_tot.axvspan(ev_date, ev_end, color=col, alpha=0.1, zorder=-20)
+                
+                if not ev.get('type') == 'single':
+                    self.ax_tot.axvspan(ev_date, ev_end, color=col, alpha=0.1, zorder=-20)
                 
                 self.ax_new.axvline(ev_date, color=col, alpha=0.5)
                 self.ax_new.axvline(ev_date + pd.Timedelta(weeks=2), color=col, linestyle='--', alpha=0.3)
                 #self.ax_tot.text(ev_date, 0.9 * df.max(), ev_title)
-        
+                
         if plot_initial:
             self.ax_tot.plot(dates_proj, gauss(days_proj, *p0), '--', alpha=0.2)
         if gaussfit:
@@ -142,7 +151,7 @@ class CovidPlot(object):
         #                 transform=self.ax_new.transAxes, bbox={'facecolor': 'lightgrey'},
         #                 horizontalalignment='center', verticalalignment='center')
         
-        self.ax_tot.legend()
+        self.ax_tot.legend(loc='center left', fontsize='x-small')
         self.ax_new.legend()
         self.ax_tests.legend(loc='center left')
         self.ax_tests.tick_params(axis='y', labelcolor='darkcyan')

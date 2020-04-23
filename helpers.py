@@ -20,9 +20,9 @@ EVENTS = {'Germany': {pd.to_datetime(k): v
                      }
          }
 
-# From: https://de.wikipedia.org/wiki/COVID-19-Pandemie_in_Deutschland#Pr%C3%BCfkapazit%C3%A4ten,_Tests_und_Anteil_positiver_Ergebnisse
-# https://www.rki.de/DE/Content/InfAZ/N/Neuartiges_Coronavirus/Situationsberichte/2020-04-15-de.pdf?__blob=publicationFile
-NR_TESTS_PER_CALWEEK = {'Germany': {k: v/7.0 for k, v in {11: 127457, 12: 348619, 13: 361374, 14: 406052, 15: 360139}.items()}}
+# From: https://de.wikipedia.org/wiki/COVID-19-Pandemie_in_Deutschland#Testkapazit%C3%A4ten_und_Anteil_positiver_Ergebnisse
+# https://www.rki.de/DE/Content/InfAZ/N/Neuartiges_Coronavirus/Situationsberichte/Gesamt.html
+NR_TESTS_PER_CALWEEK = {'Germany': {k: v/7.0 for k, v in {11: 127457, 12: 348619, 13: 361374, 14: 408173, 15: 378881, 16: 323449}.items()}}
 
 COLORS = plt.rcParams['axes.prop_cycle'].by_key()['color']
 

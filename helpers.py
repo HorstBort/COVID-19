@@ -23,7 +23,7 @@ EVENTS = {'Germany': {pd.to_datetime(k): v
 # From: https://de.wikipedia.org/wiki/COVID-19-Pandemie_in_Deutschland#Testkapazit%C3%A4ten_und_Anteil_positiver_Ergebnisse
 # https://www.rki.de/DE/Content/InfAZ/N/Neuartiges_Coronavirus/Situationsberichte/Gesamt.html
 NR_TESTS_PER_CALWEEK = {'Germany': {k: v/7.0 for k, v in {11: 127457, 12: 348619, 13: 361515, 14: 408348, 15: 379233, 16: 330027,
-                                                          17: 467137}.items()}}
+                                                          17: 357876, 18: 317979, 19: 382154}.items()}}
 
 COLORS = plt.rcParams['axes.prop_cycle'].by_key()['color']
 
